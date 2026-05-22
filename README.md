@@ -1,5 +1,11 @@
 # 💸 Digital Wallet — Frontend
 
+![Vue](https://img.shields.io/badge/Vue.js-3.4+-4FC08D?style=flat-square&logo=vue.js&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5+-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Pinia](https://img.shields.io/badge/Pinia-2+-FFD859?style=flat-square)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3+-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+
 > Interface Vue.js 3 para a carteira digital pessoal — autenticação, dashboard, depósito, saque e histórico de transações.
 
 ---
