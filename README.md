@@ -358,26 +358,6 @@ fetchTransactions(params?), setFilter(key, value), resetFilters(), $reset()
 
 ---
 
-## 💬 Commits Semânticos Sugeridos
-
-```bash
-git commit -m "feat: setup inicial Vue 3 + Vite + Tailwind"
-git commit -m "feat: instância Axios com interceptors de auth e 401"
-git commit -m "feat: stores Pinia para auth, wallet e transactions"
-git commit -m "feat: router com navigation guards"
-git commit -m "feat: layout autenticado com sidebar responsiva"
-git commit -m "feat: views de login e registro com validação"
-git commit -m "feat: dashboard com saldo e últimas transações"
-git commit -m "feat: formulário de depósito com atalhos de valor"
-git commit -m "feat: formulário de saque com preview de saldo"
-git commit -m "feat: histórico paginado com filtros"
-git commit -m "feat: sistema de toast notifications global"
-git commit -m "chore: configuração Vercel e Netlify para SPA"
-git commit -m "docs: README completo do frontend"
-```
-
----
-
 ## 📄 Licença
 
 MIT © Digital Wallet Frontend
