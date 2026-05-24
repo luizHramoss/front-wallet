@@ -54,7 +54,7 @@ Funcionalidades:
 | HTTP | Axios 1.6 |
 | UI | TailwindCSS 3 + @tailwindcss/forms |
 | Lint | ESLint + Prettier |
-| Deploy | Vercel ou Netlify |
+| Deploy | Vercel |
 
 ---
 
@@ -193,18 +193,6 @@ vercel
 ```
 
 O arquivo `vercel.json` já está configurado para redirecionar todas as rotas para `index.html` (SPA).
-
-### Netlify
-
-```bash
-# Instalar CLI
-npm install -g netlify-cli
-
-# Deploy
-netlify deploy --prod --dir=dist
-```
-
-O arquivo `netlify.toml` já está configurado com redirects para SPA.
 
 ### GitHub Actions (opcional)
 
