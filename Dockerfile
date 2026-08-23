@@ -10,7 +10,9 @@ COPY . .
 RUN npm run build
 
 # ---------- Stage 2: Serve ----------
-FROM nginx:1.27-alpine
+FROM nginx:1.31-alpine
+
+RUN apk update && apk upgrade --no-cache
 
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
