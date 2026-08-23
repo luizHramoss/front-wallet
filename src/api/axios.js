@@ -1,7 +1,11 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+  // Runtime config (window.__ENV__, written by docker/generate-env-config.sh
+  // when the container starts) takes priority over the build-time Vite env
+  // var, so the same image works across environments without a rebuild -
+  // see the Dockerfile and docker/generate-env-config.sh.
+  baseURL: window.__ENV__?.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
