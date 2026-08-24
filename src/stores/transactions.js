@@ -10,6 +10,9 @@ export const useTransactionsStore = defineStore('transactions', () => {
 
   const filters = reactive({
     type: '',
+    status: '',
+    category_id: '',
+    account_id: '',
     date_from: '',
     date_to: '',
     per_page: 15,
@@ -35,6 +38,23 @@ export const useTransactionsStore = defineStore('transactions', () => {
     }
   }
 
+  async function createTransaction(data) {
+    const res = await transactionsApi.create(data)
+    return res.data.data
+  }
+
+  async function updateTransaction(id, data) {
+    const res = await transactionsApi.update(id, data)
+    const idx = items.value.findIndex((t) => t.id === id)
+    if (idx !== -1) items.value[idx] = res.data.data
+    return res.data.data
+  }
+
+  async function deleteTransaction(id) {
+    await transactionsApi.delete(id)
+    items.value = items.value.filter((t) => t.id !== id)
+  }
+
   function setFilter(key, value) {
     filters[key] = value
     filters.page = 1
@@ -42,6 +62,9 @@ export const useTransactionsStore = defineStore('transactions', () => {
 
   function resetFilters() {
     filters.type = ''
+    filters.status = ''
+    filters.category_id = ''
+    filters.account_id = ''
     filters.date_from = ''
     filters.date_to = ''
     filters.per_page = 15
@@ -56,5 +79,18 @@ export const useTransactionsStore = defineStore('transactions', () => {
     resetFilters()
   }
 
-  return { items, meta, loading, error, filters, fetchTransactions, setFilter, resetFilters, $reset }
+  return {
+    items,
+    meta,
+    loading,
+    error,
+    filters,
+    fetchTransactions,
+    createTransaction,
+    updateTransaction,
+    deleteTransaction,
+    setFilter,
+    resetFilters,
+    $reset,
+  }
 })

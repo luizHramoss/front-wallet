@@ -1,25 +1,24 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { walletApi } from '@/api/wallet'
+import { ref, computed } from 'vue'
+import { accountsApi } from '@/api/accounts'
 
-// Fase 1: still backed by the single default account exposed at
-// /api/wallet/* (see WalletController) - full multi-account CRUD lands in
-// Fase 2. Named accountsStore already so call sites don't need to change
-// again when that happens.
 export const useAccountsStore = defineStore('accounts', () => {
-  const account = ref(null)
-  const balance = ref(null)
-  const dashboard = ref(null)
+  const items = ref([])
   const loading = ref(false)
   const error = ref(null)
 
-  async function fetchAccount() {
+  const activeAccounts = computed(() => items.value.filter((a) => !a.is_archived))
+  const archivedAccounts = computed(() => items.value.filter((a) => a.is_archived))
+  const totalBalance = computed(() =>
+    activeAccounts.value.reduce((sum, a) => sum + Number(a.balance), 0)
+  )
+
+  async function fetchAccounts() {
     loading.value = true
     error.value = null
     try {
-      const res = await walletApi.getBalance()
-      account.value = res.data.data
-      balance.value = account.value.balance
+      const res = await accountsApi.list()
+      items.value = res.data.data
     } catch (e) {
       error.value = e
     } finally {
@@ -27,41 +26,47 @@ export const useAccountsStore = defineStore('accounts', () => {
     }
   }
 
-  async function fetchDashboard() {
-    loading.value = true
-    error.value = null
-    try {
-      const res = await walletApi.getDashboard()
-      dashboard.value = res.data.data
-      balance.value = res.data.data.balance
-    } catch (e) {
-      error.value = e
-    } finally {
-      loading.value = false
-    }
+  async function createAccount(data) {
+    const res = await accountsApi.create(data)
+    items.value.push(res.data.data)
+    return res.data.data
   }
 
-  async function deposit(amount) {
-    const res = await walletApi.deposit(amount)
-    const tx = res.data.data
-    balance.value = Number(balance.value ?? 0) + Number(tx.amount)
-    return tx
+  async function updateAccount(id, data) {
+    const res = await accountsApi.update(id, data)
+    const idx = items.value.findIndex((a) => a.id === id)
+    if (idx !== -1) items.value[idx] = res.data.data
+    return res.data.data
   }
 
-  async function withdraw(amount) {
-    const res = await walletApi.withdraw(amount)
-    const tx = res.data.data
-    balance.value = Number(balance.value ?? 0) - Number(tx.amount)
-    return tx
+  async function archiveAccount(id) {
+    await accountsApi.archive(id)
+    const account = items.value.find((a) => a.id === id)
+    if (account) account.is_archived = true
+  }
+
+  function findById(id) {
+    return items.value.find((a) => a.id === Number(id))
   }
 
   function $reset() {
-    account.value = null
-    balance.value = null
-    dashboard.value = null
+    items.value = []
     loading.value = false
     error.value = null
   }
 
-  return { account, balance, dashboard, loading, error, fetchAccount, fetchDashboard, deposit, withdraw, $reset }
+  return {
+    items,
+    loading,
+    error,
+    activeAccounts,
+    archivedAccounts,
+    totalBalance,
+    fetchAccounts,
+    createAccount,
+    updateAccount,
+    archiveAccount,
+    findById,
+    $reset,
+  }
 })

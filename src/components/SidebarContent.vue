@@ -66,10 +66,11 @@
   const { isDark, toggleDark } = useTheme()
 
   const navItems = [
-    { name: 'Dashboard',     label: 'Dashboard',   icon: '🏠', to: { name: 'Dashboard' } },
-    { name: 'Deposit',       label: 'Depositar',   icon: '⬆️', to: { name: 'Deposit' } },
-    { name: 'Withdraw',      label: 'Sacar',       icon: '⬇️', to: { name: 'Withdraw' } },
-    { name: 'Transactions',  label: 'Histórico',   icon: '📋', to: { name: 'Transactions' } },
+    { name: 'Dashboard',       label: 'Dashboard',     icon: '🏠', to: { name: 'Dashboard' } },
+    { name: 'Transactions',    label: 'Histórico',     icon: '📋', to: { name: 'Transactions' } },
+    { name: 'Accounts',        label: 'Contas',        icon: '🏦', to: { name: 'Accounts' } },
+    { name: 'Categories',      label: 'Categorias',    icon: '🏷️', to: { name: 'Categories' } },
+    { name: 'RecurringBills',  label: 'Contas fixas',  icon: '📌', to: { name: 'RecurringBills' } },
   ]
 
   function isActive(to) {
