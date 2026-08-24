@@ -1,6 +1,6 @@
 <template>
   <Transition name="fade">
-    <p v-if="message" class="mt-1 text-xs text-red-600 flex items-center gap-1">
+    <p v-if="message" class="mt-1 text-xs text-danger flex items-center gap-1">
       <span>⚠</span> {{ message }}
     </p>
   </Transition>

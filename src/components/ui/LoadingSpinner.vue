@@ -5,7 +5,7 @@
         :class="['spinner', sizeClass]"
         :style="{ borderColor: `${color} transparent ${color} ${color}` }"
       />
-      <p v-if="label" class="text-sm text-gray-500">{{ label }}</p>
+      <p v-if="label" class="text-sm text-muted">{{ label }}</p>
     </div>
   </div>
 </template>

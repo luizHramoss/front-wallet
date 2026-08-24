@@ -29,11 +29,11 @@
 
   function typeClass(type) {
     return {
-      success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-      error:   'bg-red-50 border-red-200 text-red-800',
-      warning: 'bg-amber-50 border-amber-200 text-amber-800',
-      info:    'bg-blue-50 border-blue-200 text-blue-800',
-    }[type] ?? 'bg-gray-50 border-gray-200 text-gray-800'
+      success: 'bg-income-soft border-income/20 text-income',
+      error:   'bg-danger-soft border-danger/20 text-danger',
+      warning: 'bg-warning-soft border-warning/20 text-warning',
+      info:    'bg-accent/10 border-accent/20 text-accent-strong',
+    }[type] ?? 'bg-surface-alt border-border text-ink'
   }
 
   function typeIcon(type) {

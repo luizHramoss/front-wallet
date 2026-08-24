@@ -4,8 +4,8 @@
       <!-- Header -->
       <div class="text-center mb-8">
         <div class="text-5xl mb-4">💸</div>
-        <h1 class="text-2xl font-bold text-gray-900">Entrar na sua conta</h1>
-        <p class="text-gray-500 mt-1 text-sm">Gerencie sua carteira digital com segurança</p>
+        <h1 class="text-2xl font-bold text-ink">Entrar na sua conta</h1>
+        <p class="text-muted mt-1 text-sm">Gerencie sua carteira digital com segurança</p>
       </div>
 
       <!-- Card -->
@@ -15,7 +15,7 @@
         <form novalidate @submit.prevent="handleSubmit">
           <!-- Email -->
           <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">E-mail</label>
+            <label for="email" class="block text-sm font-medium text-ink mb-1.5">E-mail</label>
             <input
               id="email"
               v-model="form.email"
@@ -31,7 +31,7 @@
           <!-- Senha -->
           <div class="mb-6">
             <div class="flex items-center justify-between mb-1.5">
-              <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+              <label for="password" class="block text-sm font-medium text-ink">Senha</label>
             </div>
             <input
               id="password"
@@ -55,7 +55,7 @@
           </button>
         </form>
 
-        <p class="mt-5 text-center text-sm text-gray-500">
+        <p class="mt-5 text-center text-sm text-muted">
           Não tem conta?
           <RouterLink :to="{ name: 'Register' }" class="text-brand-600 font-medium hover:underline">
             Criar conta
