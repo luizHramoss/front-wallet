@@ -60,6 +60,7 @@
   import { useCategoriesStore } from '@/stores/categories'
   import { useTransactionsStore } from '@/stores/transactions'
   import { useRecurringBillsStore } from '@/stores/recurringBills'
+  import { useInvestmentsStore } from '@/stores/investments'
   import { useDashboardStore } from '@/stores/dashboard'
   import { useNotification } from '@/composables/useNotification'
   import SidebarContent from '@/components/SidebarContent.vue'
@@ -71,6 +72,7 @@
   const categoriesStore = useCategoriesStore()
   const txStore = useTransactionsStore()
   const billsStore = useRecurringBillsStore()
+  const investmentsStore = useInvestmentsStore()
   const dashboardStore = useDashboardStore()
   const { error } = useNotification()
 
@@ -83,6 +85,7 @@
       categoriesStore.$reset()
       txStore.$reset()
       billsStore.$reset()
+      investmentsStore.$reset()
       dashboardStore.$reset()
       router.push({ name: 'Login' })
     } catch {

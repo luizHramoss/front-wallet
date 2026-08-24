@@ -47,6 +47,16 @@ const routes = [
         name: 'RecurringBills',
         component: () => import('@/views/RecurringBillsView.vue'),
       },
+      {
+        path: 'variable-expenses',
+        name: 'VariableExpenses',
+        component: () => import('@/views/VariableExpensesView.vue'),
+      },
+      {
+        path: 'investments',
+        name: 'Investments',
+        component: () => import('@/views/InvestmentsView.vue'),
+      },
     ],
   },
 

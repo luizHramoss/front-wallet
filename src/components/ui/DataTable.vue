@@ -1,7 +1,7 @@
 <template>
-  <div class="card p-0 overflow-hidden">
+  <div class="card p-0 overflow-visible">
     <!-- Loading skeleton -->
-    <div v-if="loading && !items.length" class="divide-y divide-border">
+    <div v-if="loading && !items.length" class="divide-y divide-border rounded-2xl overflow-hidden">
       <div
         v-for="i in skeletonRows"
         :key="i"
@@ -31,12 +31,15 @@
     </EmptyState>
 
     <!-- Rows -->
+    <!-- overflow stays visible on the card (see above) so a row's dropdown
+         menu (near the bottom of a long list) isn't clipped by the card's
+         own bounds - rounding is done per-row instead via first:/last:. -->
     <ul v-else class="divide-y divide-border">
       <TransitionGroup name="fade">
         <li
           v-for="item in items"
           :key="item.id"
-          class="flex items-center gap-4 px-6 py-4 hover:bg-surface-alt transition-colors"
+          class="flex items-center gap-4 px-6 py-4 hover:bg-surface-alt transition-colors first:rounded-t-2xl last:rounded-b-2xl"
         >
           <slot name="row" :item="item" />
         </li>
