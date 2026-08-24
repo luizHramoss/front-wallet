@@ -66,11 +66,13 @@
   const { isDark, toggleDark } = useTheme()
 
   const navItems = [
-    { name: 'Dashboard',       label: 'Dashboard',     icon: '🏠', to: { name: 'Dashboard' } },
-    { name: 'Transactions',    label: 'Histórico',     icon: '📋', to: { name: 'Transactions' } },
-    { name: 'Accounts',        label: 'Contas',        icon: '🏦', to: { name: 'Accounts' } },
-    { name: 'Categories',      label: 'Categorias',    icon: '🏷️', to: { name: 'Categories' } },
-    { name: 'RecurringBills',  label: 'Contas fixas',  icon: '📌', to: { name: 'RecurringBills' } },
+    { name: 'Dashboard',         label: 'Dashboard',           icon: '🏠', to: { name: 'Dashboard' } },
+    { name: 'Transactions',      label: 'Histórico',           icon: '📋', to: { name: 'Transactions' } },
+    { name: 'Accounts',          label: 'Contas',              icon: '🏦', to: { name: 'Accounts' } },
+    { name: 'Categories',        label: 'Categorias',          icon: '🏷️', to: { name: 'Categories' } },
+    { name: 'RecurringBills',    label: 'Contas fixas',        icon: '📌', to: { name: 'RecurringBills' } },
+    { name: 'VariableExpenses',  label: 'Despesas variáveis',  icon: '🧾', to: { name: 'VariableExpenses' } },
+    { name: 'Investments',       label: 'Investimentos',       icon: '📈', to: { name: 'Investments' } },
   ]
 
   function isActive(to) {

@@ -22,7 +22,7 @@
     </div>
 
     <!-- Summary cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
       <SummaryCard
         icon="📈"
         label="Receitas no mês"
@@ -36,12 +36,47 @@
         icon="📉"
         label="Despesas no mês"
         :value="dashboard?.monthly_summary?.total_expense"
-        :subtitle="monthPeriod"
+        :subtitle="expenseSplitSubtitle"
         icon-bg="bg-expense-soft"
         value-color="text-expense"
         :loading="dashboardStore.loading"
       />
     </div>
+
+    <!-- Fixo vs. variável -->
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <RouterLink :to="{ name: 'RecurringBills' }" class="card-hover flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-warning-soft flex items-center justify-center text-base">📌</div>
+        <div>
+          <p class="text-xs text-muted font-medium">Fixas no mês</p>
+          <p class="text-sm font-bold text-ink">{{ formatCurrency(dashboard?.monthly_summary?.fixed_expense) }}</p>
+        </div>
+      </RouterLink>
+      <RouterLink :to="{ name: 'VariableExpenses' }" class="card-hover flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-expense-soft flex items-center justify-center text-base">🧾</div>
+        <div>
+          <p class="text-xs text-muted font-medium">Variáveis no mês</p>
+          <p class="text-sm font-bold text-ink">{{ formatCurrency(dashboard?.monthly_summary?.variable_expense) }}</p>
+        </div>
+      </RouterLink>
+    </div>
+
+    <!-- Investido este mês -->
+    <RouterLink
+      v-if="dashboard?.investments"
+      :to="{ name: 'Investments' }"
+      class="card-hover flex items-center gap-4 mb-6"
+    >
+      <div class="w-10 h-10 rounded-xl bg-transfer-soft flex items-center justify-center text-lg">📈</div>
+      <div class="flex-1">
+        <p class="text-xs text-muted font-medium">Investido este mês</p>
+        <p class="text-lg font-bold text-transfer">{{ formatCurrency(dashboard.investments.invested_this_month) }}</p>
+      </div>
+      <div v-if="dashboard.investments.total_current_value > 0" class="text-right">
+        <p class="text-xs text-muted font-medium">Carteira total</p>
+        <p class="text-sm font-semibold text-ink">{{ formatCurrency(dashboard.investments.total_current_value) }}</p>
+      </div>
+    </RouterLink>
 
     <!-- Comprometido com contas fixas -->
     <RouterLink
@@ -99,6 +134,12 @@
     const s = dashboard.value?.monthly_summary?.period
     if (!s) return ''
     return `${formatDate(s.from)} – ${formatDate(s.to)}`
+  })
+
+  const expenseSplitSubtitle = computed(() => {
+    const s = dashboard.value?.monthly_summary
+    if (!s) return ''
+    return `Fixas ${formatCurrency(s.fixed_expense)} · Variáveis ${formatCurrency(s.variable_expense)}`
   })
 
   const modalOpen = ref(false)
