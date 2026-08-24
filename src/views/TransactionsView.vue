@@ -3,8 +3,8 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Histórico</h1>
-        <p class="text-gray-500 text-sm mt-1">Todas as suas transações financeiras</p>
+        <h1 class="text-2xl font-bold text-ink">Histórico</h1>
+        <p class="text-muted text-sm mt-1">Todas as suas transações financeiras</p>
       </div>
       <button
         class="btn-secondary btn-sm"
@@ -15,210 +15,115 @@
       </button>
     </div>
 
-    <!-- Filters card -->
-    <div class="card mb-5">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Tipo -->
-        <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1.5">Tipo</label>
-          <select
-            v-model="filters.type"
-            class="input text-sm"
-            @change="applyFilters"
-          >
-            <option value="">Todos</option>
-            <option value="credit">Depósitos</option>
-            <option value="debit">Saques</option>
+    <!-- Filters -->
+    <FilterBar :has-active-filters="hasActiveFilters">
+      <div>
+        <label class="block text-xs font-medium text-muted mb-1.5">Tipo</label>
+        <select v-model="filters.type" class="input text-sm" @change="applyFilters">
+          <option value="">Todos</option>
+          <option value="income">Receitas</option>
+          <option value="expense">Despesas</option>
+          <option value="transfer">Transferências</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-muted mb-1.5">Data inicial</label>
+        <input v-model="filters.date_from" type="date" class="input text-sm" @change="applyFilters" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-muted mb-1.5">Data final</label>
+        <input
+          v-model="filters.date_to"
+          type="date"
+          class="input text-sm"
+          :min="filters.date_from"
+          @change="applyFilters"
+        />
+      </div>
+
+      <div class="flex items-end gap-2">
+        <div class="flex-1">
+          <label class="block text-xs font-medium text-muted mb-1.5">Por página</label>
+          <select v-model="filters.per_page" class="input text-sm" @change="applyFilters">
+            <option :value="10">10</option>
+            <option :value="15">15</option>
+            <option :value="25">25</option>
+            <option :value="50">50</option>
           </select>
         </div>
-
-        <!-- Data inicial -->
-        <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1.5">Data inicial</label>
-          <input
-            v-model="filters.date_from"
-            type="date"
-            class="input text-sm"
-            @change="applyFilters"
-          />
-        </div>
-
-        <!-- Data final -->
-        <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1.5">Data final</label>
-          <input
-            v-model="filters.date_to"
-            type="date"
-            class="input text-sm"
-            :min="filters.date_from"
-            @change="applyFilters"
-          />
-        </div>
-
-        <!-- Por página + clear -->
-        <div class="flex items-end gap-2">
-          <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 mb-1.5">Por página</label>
-            <select v-model="filters.per_page" class="input text-sm" @change="applyFilters">
-              <option :value="10">10</option>
-              <option :value="15">15</option>
-              <option :value="25">25</option>
-              <option :value="50">50</option>
-            </select>
-          </div>
-          <button
-            class="btn-secondary btn-sm h-9 flex-shrink-0"
-            @click="clearFilters"
-          >
-            Limpar
-          </button>
-        </div>
+        <button class="btn-secondary btn-sm h-9 flex-shrink-0" @click="clearFilters">
+          Limpar
+        </button>
       </div>
 
-      <!-- Filter summary badges -->
-      <div v-if="hasActiveFilters" class="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-100">
-        <span v-if="filters.type" class="badge badge-blue">
-          {{ filters.type === 'credit' ? 'Depósitos' : 'Saques' }}
-          <button class="ml-1 hover:text-blue-900" @click="removeFilter('type')">×</button>
+      <template #badges>
+        <span v-if="filters.type" class="badge badge-info">
+          {{ typeMeta(filters.type).label }}
+          <button class="ml-1 hover:opacity-70" @click="removeFilter('type')">×</button>
         </span>
-        <span v-if="filters.date_from" class="badge badge-blue">
+        <span v-if="filters.date_from" class="badge badge-info">
           De: {{ formatDate(filters.date_from) }}
-          <button class="ml-1 hover:text-blue-900" @click="removeFilter('date_from')">×</button>
+          <button class="ml-1 hover:opacity-70" @click="removeFilter('date_from')">×</button>
         </span>
-        <span v-if="filters.date_to" class="badge badge-blue">
+        <span v-if="filters.date_to" class="badge badge-info">
           Até: {{ formatDate(filters.date_to) }}
-          <button class="ml-1 hover:text-blue-900" @click="removeFilter('date_to')">×</button>
+          <button class="ml-1 hover:opacity-70" @click="removeFilter('date_to')">×</button>
         </span>
-      </div>
-    </div>
+      </template>
+    </FilterBar>
 
     <!-- Error -->
     <ErrorAlert v-if="txStore.error" :message="getErrorMessage(txStore.error)" class="mb-4" />
 
-    <!-- Table card -->
-    <div class="card p-0 overflow-hidden">
-      <!-- Loading skeleton -->
-      <div v-if="txStore.loading" class="divide-y divide-gray-50">
-        <div
-          v-for="i in 5"
-          :key="i"
-          class="flex items-center gap-4 px-6 py-4 animate-pulse"
-        >
-          <div class="w-9 h-9 rounded-full bg-gray-100 flex-shrink-0" />
-          <div class="flex-1 space-y-2">
-            <div class="h-3.5 bg-gray-100 rounded w-20" />
-            <div class="h-3 bg-gray-100 rounded w-32" />
-          </div>
-          <div class="space-y-2 text-right">
-            <div class="h-3.5 bg-gray-100 rounded w-24 ml-auto" />
-            <div class="h-3 bg-gray-100 rounded w-16 ml-auto" />
-          </div>
-        </div>
-      </div>
-
-      <!-- Empty -->
-      <EmptyState
-        v-else-if="!txStore.items.length"
-        icon="📋"
-        title="Nenhuma transação encontrada"
-        :description="hasActiveFilters ? 'Tente outros filtros.' : 'Faça seu primeiro depósito para começar.'"
-        class="py-20"
-      >
-        <RouterLink
-          v-if="!hasActiveFilters"
-          :to="{ name: 'Deposit' }"
-          class="mt-4 btn-primary btn-sm"
-        >
+    <!-- Table -->
+    <DataTable
+      :items="txStore.items"
+      :loading="txStore.loading"
+      empty-icon="📋"
+      empty-title="Nenhuma transação encontrada"
+      :empty-description="hasActiveFilters ? 'Tente outros filtros.' : 'Faça seu primeiro depósito para começar.'"
+    >
+      <template #empty-action>
+        <RouterLink v-if="!hasActiveFilters" :to="{ name: 'Deposit' }" class="mt-4 btn-primary btn-sm">
           ⬆️ Fazer depósito
         </RouterLink>
-      </EmptyState>
+      </template>
 
-      <!-- Rows -->
-      <ul v-else class="divide-y divide-gray-50">
-        <TransitionGroup name="fade">
-          <li
-            v-for="tx in txStore.items"
-            :key="tx.id"
-            class="flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors"
-          >
-            <!-- Icon -->
-            <div
-              class="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-              :class="tx.type === 'credit' ? 'bg-emerald-100' : 'bg-red-100'"
-            >
-              {{ tx.type === 'credit' ? '⬆️' : '⬇️' }}
-            </div>
+      <template #row="{ item: tx }">
+        <div
+          class="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0"
+          :class="typeMeta(tx.type).iconBg"
+        >
+          {{ typeMeta(tx.type).icon }}
+        </div>
 
-            <!-- Info -->
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <p class="text-sm font-medium text-gray-900">
-                  {{ tx.type === 'credit' ? 'Depósito' : 'Saque' }}
-                </p>
-                <span
-                  class="badge text-xs"
-                  :class="tx.type === 'credit' ? 'badge-green' : 'badge-red'"
-                >
-                  {{ tx.type === 'credit' ? 'Crédito' : 'Débito' }}
-                </span>
-              </div>
-              <p class="text-xs text-gray-400 mt-0.5">{{ formatDateTime(tx.created_at) }}</p>
-            </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <p class="text-sm font-medium text-ink">
+              {{ typeMeta(tx.type).label }}
+            </p>
+            <span class="badge text-xs" :class="typeMeta(tx.type).badge">
+              {{ typeMeta(tx.type).badgeLabel }}
+            </span>
+            <span v-if="tx.status === 'planned'" class="badge badge-gray text-xs">
+              Previsto
+            </span>
+          </div>
+          <p class="text-xs text-muted mt-0.5">{{ formatDate(tx.occurred_at) }}</p>
+        </div>
 
-            <!-- Values -->
-            <div class="text-right flex-shrink-0">
-              <p
-                class="text-sm font-bold"
-                :class="tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'"
-              >
-                {{ tx.type === 'credit' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
-              </p>
-              <p class="text-xs text-gray-400 mt-0.5">
-                Saldo: {{ formatCurrency(tx.balance_after) }}
-              </p>
-            </div>
-          </li>
-        </TransitionGroup>
-      </ul>
-    </div>
+        <div class="text-right flex-shrink-0">
+          <p class="text-sm font-bold" :class="typeMeta(tx.type).amountColor">
+            {{ typeMeta(tx.type).sign }}{{ formatCurrency(tx.amount) }}
+          </p>
+        </div>
+      </template>
+    </DataTable>
 
     <!-- Pagination -->
-    <div
-      v-if="txStore.meta && txStore.meta.last_page > 1"
-      class="flex items-center justify-between mt-5"
-    >
-      <p class="text-sm text-gray-500">
-        Mostrando {{ showingFrom }}–{{ showingTo }} de {{ txStore.meta.total }}
-      </p>
-
-      <div class="flex items-center gap-1">
-        <button
-          class="btn-secondary btn-sm"
-          :disabled="currentPage === 1 || txStore.loading"
-          @click="goToPage(currentPage - 1)"
-        >
-          ←
-        </button>
-
-        <button
-          v-for="p in visiblePages"
-          :key="p"
-          class="btn-sm min-w-[36px]"
-          :class="p === currentPage ? 'btn-primary' : 'btn-secondary'"
-          @click="goToPage(p)"
-        >
-          {{ p }}
-        </button>
-
-        <button
-          class="btn-secondary btn-sm"
-          :disabled="currentPage === txStore.meta.last_page || txStore.loading"
-          @click="goToPage(currentPage + 1)"
-        >
-          →
-        </button>
-      </div>
-    </div>
+    <PaginationBar :meta="txStore.meta" :loading="txStore.loading" @update:page="goToPage" />
   </div>
 </template>
 
@@ -226,11 +131,22 @@
   import { reactive, computed, onMounted } from 'vue'
   import { RouterLink } from 'vue-router'
   import { useTransactionsStore } from '@/stores/transactions'
-  import { formatCurrency, formatDateTime, formatDate, getErrorMessage } from '@/utils/currency'
-  import EmptyState from '@/components/ui/EmptyState.vue'
+  import { formatCurrency, formatDate, getErrorMessage } from '@/utils/currency'
   import ErrorAlert from '@/components/ui/ErrorAlert.vue'
+  import FilterBar from '@/components/ui/FilterBar.vue'
+  import DataTable from '@/components/ui/DataTable.vue'
+  import PaginationBar from '@/components/ui/PaginationBar.vue'
 
   const txStore = useTransactionsStore()
+
+  const TYPE_META = {
+    income: { label: 'Receita', badgeLabel: 'Receita', icon: '⬆️', sign: '+', badge: 'badge-income', iconBg: 'bg-income-soft', amountColor: 'text-income' },
+    expense: { label: 'Despesa', badgeLabel: 'Despesa', icon: '⬇️', sign: '-', badge: 'badge-expense', iconBg: 'bg-expense-soft', amountColor: 'text-expense' },
+    transfer: { label: 'Transferência', badgeLabel: 'Transferência', icon: '↔️', sign: '', badge: 'badge-transfer', iconBg: 'bg-transfer-soft', amountColor: 'text-transfer' },
+  }
+  function typeMeta(type) {
+    return TYPE_META[type] ?? TYPE_META.expense
+  }
 
   // Filtros locais (sincronizados com a store ao aplicar)
   const filters = reactive({
@@ -240,34 +156,9 @@
     per_page: 15,
   })
 
-  const currentPage = computed(() => txStore.meta?.current_page ?? 1)
-
   const hasActiveFilters = computed(
     () => filters.type || filters.date_from || filters.date_to
   )
-
-  const showingFrom = computed(() => {
-    const meta = txStore.meta
-    if (!meta) return 0
-    return (meta.current_page - 1) * meta.per_page + 1
-  })
-
-  const showingTo = computed(() => {
-    const meta = txStore.meta
-    if (!meta) return 0
-    return Math.min(meta.current_page * meta.per_page, meta.total)
-  })
-
-  const visiblePages = computed(() => {
-    const last = txStore.meta?.last_page ?? 1
-    const cur = currentPage.value
-    const pages = []
-    const delta = 2
-    for (let i = Math.max(1, cur - delta); i <= Math.min(last, cur + delta); i++) {
-      pages.push(i)
-    }
-    return pages
-  })
 
   function applyFilters() {
     txStore.setFilter('type', filters.type)

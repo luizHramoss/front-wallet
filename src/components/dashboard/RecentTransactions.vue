@@ -1,10 +1,10 @@
 <template>
   <div class="card">
     <div class="flex items-center justify-between mb-5">
-      <h3 class="font-semibold text-gray-900">Últimas transações</h3>
+      <h3 class="font-semibold text-ink">Últimas transações</h3>
       <RouterLink
         :to="{ name: 'Transactions' }"
-        class="text-xs text-brand-600 hover:text-brand-700 font-medium"
+        class="text-xs text-accent hover:text-accent-strong font-medium"
       >
         Ver todas →
       </RouterLink>
@@ -17,12 +17,12 @@
         :key="i"
         class="flex items-center gap-3 animate-pulse"
       >
-        <div class="w-9 h-9 rounded-full bg-gray-100 flex-shrink-0" />
+        <div class="w-9 h-9 rounded-full bg-surface-alt flex-shrink-0" />
         <div class="flex-1 space-y-1.5">
-          <div class="h-3.5 bg-gray-100 rounded w-24" />
-          <div class="h-3 bg-gray-100 rounded w-32" />
+          <div class="h-3.5 bg-surface-alt rounded w-24" />
+          <div class="h-3 bg-surface-alt rounded w-32" />
         </div>
-        <div class="h-4 bg-gray-100 rounded w-20" />
+        <div class="h-4 bg-surface-alt rounded w-20" />
       </div>
     </div>
 
@@ -35,7 +35,7 @@
     />
 
     <!-- List -->
-    <ul v-else class="divide-y divide-gray-50">
+    <ul v-else class="divide-y divide-border">
       <li
         v-for="tx in transactions"
         :key="tx.id"
@@ -43,24 +43,20 @@
       >
         <div
           class="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-          :class="tx.type === 'credit' ? 'bg-emerald-100' : 'bg-red-100'"
+          :class="typeMeta(tx.type).iconBg"
         >
-          {{ tx.type === 'credit' ? '⬆️' : '⬇️' }}
+          {{ typeMeta(tx.type).icon }}
         </div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-900">
-            {{ tx.type === 'credit' ? 'Depósito' : 'Saque' }}
+          <p class="text-sm font-medium text-ink">
+            {{ typeMeta(tx.type).label }}
           </p>
-          <p class="text-xs text-gray-400">{{ formatDateTime(tx.created_at) }}</p>
+          <p class="text-xs text-muted">{{ formatDate(tx.occurred_at) }}</p>
         </div>
         <div class="text-right flex-shrink-0">
-          <p
-            class="text-sm font-semibold"
-            :class="tx.type === 'credit' ? 'text-emerald-600' : 'text-red-600'"
-          >
-            {{ tx.type === 'credit' ? '+' : '-' }}{{ formatCurrency(tx.amount) }}
+          <p class="text-sm font-semibold" :class="typeMeta(tx.type).amountColor">
+            {{ typeMeta(tx.type).sign }}{{ formatCurrency(tx.amount) }}
           </p>
-          <p class="text-xs text-gray-400">{{ formatCurrency(tx.balance_after) }}</p>
         </div>
       </li>
     </ul>
@@ -69,11 +65,20 @@
 
 <script setup>
   import { RouterLink } from 'vue-router'
-  import { formatCurrency, formatDateTime } from '@/utils/currency'
+  import { formatCurrency, formatDate } from '@/utils/currency'
   import EmptyState from '@/components/ui/EmptyState.vue'
 
   defineProps({
     transactions: { type: Array, default: () => [] },
     loading:      { type: Boolean, default: false },
   })
+
+  const TYPE_META = {
+    income: { label: 'Receita', icon: '⬆️', sign: '+', iconBg: 'bg-income-soft', amountColor: 'text-income' },
+    expense: { label: 'Despesa', icon: '⬇️', sign: '-', iconBg: 'bg-expense-soft', amountColor: 'text-expense' },
+    transfer: { label: 'Transferência', icon: '↔️', sign: '', iconBg: 'bg-transfer-soft', amountColor: 'text-transfer' },
+  }
+  function typeMeta(type) {
+    return TYPE_META[type] ?? TYPE_META.expense
+  }
 </script>

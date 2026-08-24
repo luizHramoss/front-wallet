@@ -7,12 +7,12 @@
       {{ icon }}
     </div>
     <div class="min-w-0">
-      <p class="text-xs text-gray-500 font-medium mb-0.5">{{ label }}</p>
-      <div v-if="loading" class="h-6 w-28 bg-gray-100 rounded animate-pulse" />
+      <p class="text-xs text-muted font-medium mb-0.5">{{ label }}</p>
+      <div v-if="loading" class="h-6 w-28 bg-surface-alt rounded animate-pulse" />
       <p v-else class="text-xl font-bold" :class="valueColor">
         {{ formatCurrency(value ?? 0) }}
       </p>
-      <p v-if="subtitle" class="text-xs text-gray-400 mt-0.5">{{ subtitle }}</p>
+      <p v-if="subtitle" class="text-xs text-muted mt-0.5">{{ subtitle }}</p>
     </div>
   </div>
 </template>
@@ -25,8 +25,8 @@
     label:     { type: String, required: true },
     value:     { type: Number, default: null },
     subtitle:  { type: String, default: '' },
-    iconBg:    { type: String, default: 'bg-gray-100' },
-    valueColor:{ type: String, default: 'text-gray-900' },
+    iconBg:    { type: String, default: 'bg-surface-alt' },
+    valueColor:{ type: String, default: 'text-ink' },
     loading:   { type: Boolean, default: false },
   })
 </script>

@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex">
+  <div class="min-h-screen bg-surface-alt flex">
     <!-- Sidebar desktop -->
     <aside
-      class="hidden lg:flex flex-col w-64 bg-white border-r border-gray-100 fixed inset-y-0 z-30"
+      class="hidden lg:flex flex-col w-64 bg-surface border-r border-border fixed inset-y-0 z-30"
     >
       <SidebarContent @logout="handleLogout" />
     </aside>
@@ -16,7 +16,7 @@
       >
         <div class="absolute inset-0 bg-black/40" />
         <aside
-          class="absolute left-0 top-0 bottom-0 w-72 bg-white flex flex-col"
+          class="absolute left-0 top-0 bottom-0 w-72 bg-surface flex flex-col"
           @click.stop
         >
           <SidebarContent @logout="handleLogout" @navigate="mobileOpen = false" />
@@ -28,15 +28,15 @@
     <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
       <!-- Topbar mobile -->
       <header
-        class="lg:hidden sticky top-0 z-20 bg-white border-b border-gray-100 px-4 h-14 flex items-center justify-between"
+        class="lg:hidden sticky top-0 z-20 bg-surface border-b border-border px-4 h-14 flex items-center justify-between"
       >
         <button
-          class="p-2 rounded-lg text-gray-500 hover:bg-gray-100"
+          class="p-2 rounded-lg text-muted hover:bg-surface-alt"
           @click="mobileOpen = true"
         >
           <IconMenu class="w-5 h-5" />
         </button>
-        <span class="font-semibold text-brand-700">💸 Digital Wallet</span>
+        <span class="font-semibold text-accent-strong">💸 Digital Wallet</span>
         <div class="w-9" />
       </header>
 
@@ -56,7 +56,7 @@
   import { ref } from 'vue'
   import { RouterView, useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
-  import { useWalletStore } from '@/stores/wallet'
+  import { useAccountsStore } from '@/stores/accounts'
   import { useTransactionsStore } from '@/stores/transactions'
   import { useNotification } from '@/composables/useNotification'
   import SidebarContent from '@/components/SidebarContent.vue'
@@ -64,7 +64,7 @@
 
   const router = useRouter()
   const auth = useAuthStore()
-  const walletStore = useWalletStore()
+  const accountsStore = useAccountsStore()
   const txStore = useTransactionsStore()
   const { error } = useNotification()
 
@@ -73,7 +73,7 @@
   async function handleLogout() {
     try {
       await auth.logout()
-      walletStore.$reset()
+      accountsStore.$reset()
       txStore.$reset()
       router.push({ name: 'Login' })
     } catch {

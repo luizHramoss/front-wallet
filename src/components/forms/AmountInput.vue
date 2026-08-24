@@ -1,11 +1,11 @@
 <template>
   <div>
-    <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1.5">
+    <label v-if="label" :for="id" class="block text-sm font-medium text-ink mb-1.5">
       {{ label }}
     </label>
     <div class="relative">
       <span
-        class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium pointer-events-none"
+        class="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm font-medium pointer-events-none"
       >
         R$
       </span>
@@ -24,7 +24,7 @@
       />
     </div>
     <FieldError :message="error" />
-    <p v-if="hint && !error" class="mt-1 text-xs text-gray-400">{{ hint }}</p>
+    <p v-if="hint && !error" class="mt-1 text-xs text-muted">{{ hint }}</p>
   </div>
 </template>
 
