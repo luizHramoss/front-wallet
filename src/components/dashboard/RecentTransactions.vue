@@ -43,19 +43,19 @@
       >
         <div
           class="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-          :class="typeMeta(tx.type).iconBg"
+          :class="typeMeta(tx).iconBg"
         >
-          {{ typeMeta(tx.type).icon }}
+          {{ typeMeta(tx).icon }}
         </div>
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-ink">
-            {{ typeMeta(tx.type).label }}
+            {{ typeMeta(tx).label }}
           </p>
           <p class="text-xs text-muted">{{ formatDate(tx.occurred_at) }}</p>
         </div>
         <div class="text-right flex-shrink-0">
-          <p class="text-sm font-semibold" :class="typeMeta(tx.type).amountColor">
-            {{ typeMeta(tx.type).sign }}{{ formatCurrency(tx.amount) }}
+          <p class="text-sm font-semibold" :class="typeMeta(tx).amountColor">
+            {{ typeMeta(tx).sign }}{{ formatCurrency(tx.amount) }}
           </p>
         </div>
       </li>
@@ -76,9 +76,20 @@
   const TYPE_META = {
     income: { label: 'Receita', icon: '⬆️', sign: '+', iconBg: 'bg-income-soft', amountColor: 'text-income' },
     expense: { label: 'Despesa', icon: '⬇️', sign: '-', iconBg: 'bg-expense-soft', amountColor: 'text-expense' },
-    transfer: { label: 'Transferência', icon: '↔️', sign: '', iconBg: 'bg-transfer-soft', amountColor: 'text-transfer' },
   }
-  function typeMeta(type) {
-    return TYPE_META[type] ?? TYPE_META.expense
+  // Transferências: sem diferenciar por transfer_direction, "enviada" e
+  // "recebida" ficavam visualmente idênticas (mesma cor, sem sinal).
+  function typeMeta(tx) {
+    if (tx.type === 'transfer') {
+      const isOut = tx.transfer_direction === 'out'
+      return {
+        label: isOut ? 'Transferência enviada' : 'Transferência recebida',
+        icon: '↔️',
+        sign: isOut ? '-' : '+',
+        iconBg: 'bg-transfer-soft',
+        amountColor: isOut ? 'text-expense' : 'text-income',
+      }
+    }
+    return TYPE_META[tx.type] ?? TYPE_META.expense
   }
 </script>
