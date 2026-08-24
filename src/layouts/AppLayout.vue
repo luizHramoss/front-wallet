@@ -57,7 +57,10 @@
   import { RouterView, useRouter } from 'vue-router'
   import { useAuthStore } from '@/stores/auth'
   import { useAccountsStore } from '@/stores/accounts'
+  import { useCategoriesStore } from '@/stores/categories'
   import { useTransactionsStore } from '@/stores/transactions'
+  import { useRecurringBillsStore } from '@/stores/recurringBills'
+  import { useDashboardStore } from '@/stores/dashboard'
   import { useNotification } from '@/composables/useNotification'
   import SidebarContent from '@/components/SidebarContent.vue'
   import IconMenu from '@/components/ui/IconMenu.vue'
@@ -65,7 +68,10 @@
   const router = useRouter()
   const auth = useAuthStore()
   const accountsStore = useAccountsStore()
+  const categoriesStore = useCategoriesStore()
   const txStore = useTransactionsStore()
+  const billsStore = useRecurringBillsStore()
+  const dashboardStore = useDashboardStore()
   const { error } = useNotification()
 
   const mobileOpen = ref(false)
@@ -74,7 +80,10 @@
     try {
       await auth.logout()
       accountsStore.$reset()
+      categoriesStore.$reset()
       txStore.$reset()
+      billsStore.$reset()
+      dashboardStore.$reset()
       router.push({ name: 'Login' })
     } catch {
       error('Erro ao fazer logout.')

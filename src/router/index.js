@@ -28,19 +28,24 @@ const routes = [
         component: () => import('@/views/DashboardView.vue'),
       },
       {
-        path: 'deposit',
-        name: 'Deposit',
-        component: () => import('@/views/DepositView.vue'),
-      },
-      {
-        path: 'withdraw',
-        name: 'Withdraw',
-        component: () => import('@/views/WithdrawView.vue'),
-      },
-      {
         path: 'transactions',
         name: 'Transactions',
         component: () => import('@/views/TransactionsView.vue'),
+      },
+      {
+        path: 'accounts',
+        name: 'Accounts',
+        component: () => import('@/views/AccountsView.vue'),
+      },
+      {
+        path: 'categories',
+        name: 'Categories',
+        component: () => import('@/views/CategoriesView.vue'),
+      },
+      {
+        path: 'recurring-bills',
+        name: 'RecurringBills',
+        component: () => import('@/views/RecurringBillsView.vue'),
       },
     ],
   },
