@@ -63,7 +63,7 @@
 
       <template #badges>
         <span v-if="filters.type" class="badge badge-info">
-          {{ typeMeta(filters.type).label }}
+          {{ typeMeta({ type: filters.type }).badgeLabel }}
           <button class="ml-1 hover:opacity-70" @click="removeFilter('type')">×</button>
         </span>
         <span v-if="filters.account_id" class="badge badge-info">
@@ -105,18 +105,18 @@
       <template #row="{ item: tx }">
         <div
           class="w-9 h-9 rounded-full flex items-center justify-center text-sm flex-shrink-0"
-          :class="typeMeta(tx.type).iconBg"
+          :class="typeMeta(tx).iconBg"
         >
-          {{ typeMeta(tx.type).icon }}
+          {{ typeMeta(tx).icon }}
         </div>
 
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <p class="text-sm font-medium text-ink">
-              {{ tx.description || categoryName(tx.category_id) || typeMeta(tx.type).label }}
+              {{ tx.description || categoryName(tx.category_id) || typeMeta(tx).label }}
             </p>
-            <span class="badge text-xs" :class="typeMeta(tx.type).badge">
-              {{ typeMeta(tx.type).badgeLabel }}
+            <span class="badge text-xs" :class="typeMeta(tx).badge">
+              {{ typeMeta(tx).badgeLabel }}
             </span>
             <span v-if="tx.status === 'planned'" class="badge badge-gray text-xs">
               Previsto
@@ -129,8 +129,8 @@
         </div>
 
         <div class="text-right flex-shrink-0 flex items-center gap-2">
-          <p class="text-sm font-bold" :class="typeMeta(tx.type).amountColor">
-            {{ typeMeta(tx.type).sign }}{{ formatCurrency(tx.amount) }}
+          <p class="text-sm font-bold" :class="typeMeta(tx).amountColor">
+            {{ typeMeta(tx).sign }}{{ formatCurrency(tx.amount) }}
           </p>
           <DropdownMenu>
             <DropdownMenuItem v-if="tx.type !== 'transfer'" @click="openEdit(tx)">✏️ Editar</DropdownMenuItem>
@@ -172,10 +172,24 @@
   const TYPE_META = {
     income: { label: 'Receita', badgeLabel: 'Receita', icon: '⬆️', sign: '+', badge: 'badge-income', iconBg: 'bg-income-soft', amountColor: 'text-income' },
     expense: { label: 'Despesa', badgeLabel: 'Despesa', icon: '⬇️', sign: '-', badge: 'badge-expense', iconBg: 'bg-expense-soft', amountColor: 'text-expense' },
-    transfer: { label: 'Transferência', badgeLabel: 'Transferência', icon: '↔️', sign: '', badge: 'badge-transfer', iconBg: 'bg-transfer-soft', amountColor: 'text-transfer' },
   }
-  function typeMeta(type) {
-    return TYPE_META[type] ?? TYPE_META.expense
+  // Transferências têm duas linhas (uma por conta) - sem diferenciar por
+  // transfer_direction aqui, "enviada" e "recebida" ficavam visualmente
+  // idênticas na lista (mesma cor, sem sinal), difícil de escanear.
+  function typeMeta(tx) {
+    if (tx.type === 'transfer') {
+      const isOut = tx.transfer_direction === 'out'
+      return {
+        label: isOut ? 'Transferência enviada' : 'Transferência recebida',
+        badgeLabel: 'Transferência',
+        icon: '↔️',
+        sign: isOut ? '-' : '+',
+        badge: 'badge-transfer',
+        iconBg: 'bg-transfer-soft',
+        amountColor: isOut ? 'text-expense' : 'text-income',
+      }
+    }
+    return TYPE_META[tx.type] ?? TYPE_META.expense
   }
 
   function accountName(id) {
