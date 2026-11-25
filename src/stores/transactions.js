@@ -19,7 +19,12 @@ export const useTransactionsStore = defineStore('transactions', () => {
     page: 1,
   })
 
+  // Paginar/filtrar rápido dispara várias requisições; sem isso a resposta
+  // de uma requisição antiga que chega por último sobrescrevia a lista atual.
+  let latestRequestId = 0
+
   async function fetchTransactions(params = {}) {
+    const requestId = ++latestRequestId
     loading.value = true
     error.value = null
     try {
@@ -29,12 +34,13 @@ export const useTransactionsStore = defineStore('transactions', () => {
         if (query[k] === '' || query[k] === null) delete query[k]
       })
       const res = await transactionsApi.list(query)
+      if (requestId !== latestRequestId) return
       items.value = res.data.data
       meta.value = res.data.meta
     } catch (e) {
-      error.value = e
+      if (requestId === latestRequestId) error.value = e
     } finally {
-      loading.value = false
+      if (requestId === latestRequestId) loading.value = false
     }
   }
 

@@ -112,7 +112,7 @@
   import { useTransactionsStore } from '@/stores/transactions'
   import { useForm } from '@/composables/useForm'
   import { useNotification } from '@/composables/useNotification'
-  import { formatCurrency, getErrorMessage, getFieldErrors } from '@/utils/currency'
+  import { formatCurrency, getErrorMessage, getFieldErrors, toISODate } from '@/utils/currency'
   import ModalDialog from '@/components/ui/ModalDialog.vue'
   import FieldError from '@/components/ui/FieldError.vue'
   import AmountInput from '@/components/forms/AmountInput.vue'
@@ -153,7 +153,7 @@
   }
 
   function today() {
-    return new Date().toISOString().slice(0, 10)
+    return toISODate()
   }
 
   const { form, errors, loading, submit, setErrors, reset } = useForm({

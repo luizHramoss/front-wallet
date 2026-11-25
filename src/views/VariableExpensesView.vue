@@ -83,7 +83,7 @@
   import { useAccountsStore } from '@/stores/accounts'
   import { useCategoriesStore } from '@/stores/categories'
   import { useNotification } from '@/composables/useNotification'
-  import { formatCurrency, formatDate, getErrorMessage } from '@/utils/currency'
+  import { formatCurrency, formatDate, getErrorMessage, toISODate } from '@/utils/currency'
   import ErrorAlert from '@/components/ui/ErrorAlert.vue'
   import FilterBar from '@/components/ui/FilterBar.vue'
   import DataTable from '@/components/ui/DataTable.vue'
@@ -104,8 +104,8 @@
 
   function monthRange() {
     const now = new Date()
-    const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10)
-    const to = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().slice(0, 10)
+    const from = toISODate(new Date(now.getFullYear(), now.getMonth(), 1))
+    const to = toISODate(new Date(now.getFullYear(), now.getMonth() + 1, 0))
     return { from, to }
   }
 
