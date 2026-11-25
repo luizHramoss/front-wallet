@@ -35,7 +35,37 @@ export function formatDateTime(iso) {
  */
 export function formatDate(iso) {
   if (!iso) return '—'
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(iso))
+  return new Intl.DateTimeFormat('pt-BR').format(parseISODate(iso))
+}
+
+const DATE_ONLY = /^(\d{4})-(\d{2})-(\d{2})$/
+
+/**
+ * Converte string ISO em Date. Datas puras ("YYYY-MM-DD", como occurred_at
+ * da API) são interpretadas no fuso local - `new Date('2024-01-15')` é
+ * meia-noite UTC, que no Brasil (UTC-3) vira 14/01 às 21h e exibia o dia
+ * anterior.
+ * @param {string} iso
+ * @returns {Date}
+ */
+export function parseISODate(iso) {
+  const m = DATE_ONLY.exec(iso)
+  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+  return new Date(iso)
+}
+
+/**
+ * Formata um Date como "YYYY-MM-DD" no fuso local (formato aceito pela API e
+ * por <input type="date">). Evita `toISOString().slice(0, 10)`, que usa UTC e
+ * à noite no Brasil já devolve o dia seguinte.
+ * @param {Date} [date]
+ * @returns {string}
+ */
+export function toISODate(date = new Date()) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
 }
 
 /**
